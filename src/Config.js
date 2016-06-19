@@ -7,6 +7,7 @@ function Config (config) {
   this._devMode = config.development || !!process.env.NODE_ENV === 'development'
   this._productionMode = !this._devMode
   this._entry = config.entry
+  this._library = config.library
   this._output = path.resolve(config.output)
   this._jsx = config.jsx
     ? config.jsx === true ? 'react' : config.jsx
@@ -30,6 +31,7 @@ Config.prototype.build = function () {
     devtool: this._devtool(),
     plugins: this._plugins(),
     externals: this._externals(),
+    library: this._library,
     libraryTarget: this._libraryTarget()
   }
 }
