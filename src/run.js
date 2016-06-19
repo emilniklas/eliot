@@ -19,12 +19,12 @@ module.exports = function (target, argv, watch) {
       }
       report(target, stats, true)
       if (forked) {
-        forked.on('close', function () {
+        forked.on('exit', function () {
           forked = fork(target.output, argv)
         })
         return forked.kill()
       }
-      fork(target.output, argv)
+      forked = fork(target.output, argv)
     })
   } else {
     compiler.run(function (err) {
