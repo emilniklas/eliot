@@ -1,6 +1,6 @@
 {
   "name": "eliot",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "main": "index.js",
   "bin": {
     "eliot": "bin/eliot.js"

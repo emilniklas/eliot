@@ -207,7 +207,13 @@ Config.prototype._externals = function () {
       return void 0
     case Config.Target.NODE6:
       var externals = {}
-      fs.readdirSync(path.resolve(process.cwd(), 'node_modules'))
+      var deps
+      try {
+        deps = fs.readdirSync(path.resolve(process.cwd(), 'node_modules'))
+      } catch (e) {
+        deps = fs.readdirSync(path.resolve(process.cwd(), '..'))
+      }
+      deps
         .filter(function (x) {
           return ['.bin'].indexOf(x) === -1
         })
