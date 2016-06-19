@@ -9,6 +9,8 @@ function Config (config) {
   this._entry = config.entry
   this._library = config.library
   this._output = path.resolve(config.output)
+  this._package = require(path.resolve(process.cwd, 'package.json'))
+  this._package.name = this._package.name || path.basename(process.cwd())
   this._jsx = config.jsx
     ? config.jsx === true ? 'react' : config.jsx
     : false
@@ -76,7 +78,7 @@ Config.prototype._json = function () {
 Config.prototype._babel = function () {
   return {
     test: /\.js$/,
-    exclude: /(node_modules(?![\/\\]eliot)|bower_components)/,
+    exclude: new RegExp(`(node_modules(?![\\/\\\\]eliot)(?![\\/\\\\]${this._package.name})|bower_components)`),
     loader: 'babel',
     query: {
       presets: this._babelPresets(),
