@@ -29,7 +29,8 @@ Config.prototype.build = function () {
     target: this._webpackTarget(),
     devtool: this._devtool(),
     plugins: this._plugins(),
-    externals: this._externals()
+    externals: this._externals(),
+    libraryTarget: this._libraryTarget()
   }
 }
 
@@ -209,6 +210,17 @@ Config.prototype._externals = function () {
         .forEach(function (mod) {
           externals[mod] = 'commonjs ' + mod
         })
+  }
+}
+
+Config.prototype._libraryTarget = function () {
+  switch (this._target) {
+    case Config.Target.ES3:
+    case Config.Target.ES5:
+    case Config.Target.ES6:
+      return void 0
+    case Config.Target.NODE6:
+      return 'commonjs2'
   }
 }
 
