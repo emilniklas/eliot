@@ -52,7 +52,7 @@ Config.prototype._webpackOutput = function () {
     filename: path.basename(this._output),
     pathinfo: this._devMode,
     library: this._library,
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs2',
     umdNamedDefine: true
   }
 }
