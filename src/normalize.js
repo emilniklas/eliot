@@ -7,7 +7,7 @@ module.exports = function (configuration, overrides) {
     jsx: overrides.jsx || configuration.jsx || false,
     decorators: overrides.decorators || configuration.decorators || false,
     entry: overrides.entry || configuration.entry,
-    development: !overrides.production || configuration.development || true,
+    development: !(overrides.production || configuration.production || configuration.development === false),
     output: overrides.output || configuration.output
   }
 

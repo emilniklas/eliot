@@ -30,7 +30,12 @@ module.exports = function (targets, watch) {
     return allConfig[k][1]
   })
   var compiler = webpack(webpackConfigs)
-  var report = function (err, stats) {
+  function report (err, stats) {
+    if (stats.stats) {
+      return stats.stats.forEach(function (stats) {
+        return report(err, stats)
+      })
+    }
     var id = stats.compilation.assets[Object.keys(stats.compilation.assets)[0]].existsAt
     if (!id) { return }
     var config = allConfig[id][0]
