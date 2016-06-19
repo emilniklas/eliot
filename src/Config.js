@@ -30,9 +30,7 @@ Config.prototype.build = function () {
     target: this._webpackTarget(),
     devtool: this._devtool(),
     plugins: this._plugins(),
-    externals: this._externals(),
-    library: this._library,
-    libraryTarget: this._libraryTarget()
+    externals: this._externals()
   }
 }
 
@@ -49,7 +47,9 @@ Config.prototype._buildEntry = function () {
 Config.prototype._webpackOutput = function () {
   return {
     path: path.dirname(this._output),
-    filename: path.basename(this._output)
+    filename: path.basename(this._output),
+    library: this._library,
+    libraryTarget: this._libraryTarget()
   }
 }
 
