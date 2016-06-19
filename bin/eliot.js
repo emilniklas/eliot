@@ -11,6 +11,7 @@ var glob = require('glob').sync
 
 var run = require('../src/run')
 var build = require('../src/build')
+var test = require('../src/test')
 
 program
   .version(eliot.version)
@@ -21,8 +22,11 @@ program
   .option('--target [target]', 'Target to build to [' + Object.keys(Target).map(function (k) { return Target[k] }).join('|') + ']')
   .option('--entry [file]', 'Entry file')
   .option('--output [file]', 'Output file')
+  .option('--using [executable]', 'For the test command. Specifies which executable to use for running the tests')
+  .option('-l, --library', 'Expose the target as a UMD library')
   .option('-p, --production', 'Production mode')
   .option('-w, --watch', 'Watch the entry points and compile automatically')
+  .option('-v, --verbose', 'Enable more detailed logging for debugging')
 
 program.on('--help', function () {
   console.log('  Commands:')
@@ -68,7 +72,8 @@ program.parse(process.argv)
           entry: file
         })[0]
       })
-    return console.log('test!', targets)
+    var executable = program.using || 'node'
+    return test(targets, executable, !!program.watch, !!program.verbose)
   }
 
   if (args.length === 0 && targets.length === 1 && !targets[0].entry) {
@@ -77,10 +82,10 @@ program.parse(process.argv)
   }
 
   if (args[0] === 'build') {
-    return build(targets, !!program.watch)
+    return build(targets, !!program.watch, !!program.verbose)
   }
 
   var target = targets[0]
   target.entry = args[0] || target.entry
-  run(target, runArgs, !!program.watch)
+  run(target, runArgs, !!program.watch, !!program.verbose)
 })(program.args, program)

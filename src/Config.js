@@ -48,8 +48,10 @@ Config.prototype._webpackOutput = function () {
   return {
     path: path.dirname(this._output),
     filename: path.basename(this._output),
+    pathinfo: this._devMode,
     library: this._library,
-    libraryTarget: this._library ? this._libraryTarget() : void 0
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   }
 }
 
@@ -212,17 +214,7 @@ Config.prototype._externals = function () {
         .forEach(function (mod) {
           externals[mod] = 'commonjs ' + mod
         })
-  }
-}
-
-Config.prototype._libraryTarget = function () {
-  switch (this._target) {
-    case Config.Target.ES3:
-    case Config.Target.ES5:
-    case Config.Target.ES6:
-      return 'umd'
-    case Config.Target.NODE6:
-      return 'commonjs2'
+      return externals
   }
 }
 

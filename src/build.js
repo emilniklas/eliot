@@ -15,7 +15,7 @@ function reportMulti (config, err, stats) {
   })
 }
 
-module.exports = function (targets, watch) {
+module.exports = function (targets, watch, verbose) {
   var allConfig = {}
   targets.forEach(function (target) {
     if (!target.output) {
@@ -29,6 +29,7 @@ module.exports = function (targets, watch) {
   var webpackConfigs = Object.keys(allConfig).map(function (k) {
     return allConfig[k][1]
   })
+  verbose && console.log(webpackConfigs)
   var compiler = webpack(webpackConfigs)
   function report (err, stats) {
     if (stats.stats) {

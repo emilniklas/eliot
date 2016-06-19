@@ -1,3 +1,4 @@
+import 'source-map-support/register'
 import 'isomorphic-fetch/fetch-npm-node'
 
 global.__fetch = global.fetch

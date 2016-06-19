@@ -4,10 +4,11 @@ var tempfile = require('tempfile')
 var fork = require('child_process').fork
 var report = require('./report')
 
-module.exports = function (target, argv, watch) {
+module.exports = function (target, argv, watch, verbose) {
   target.output = tempfile('.js')
   target.target = Config.Target.NODE6
   var config = new Config(target).build()
+  verbose && console.log(config)
   var compiler = webpack(config)
   if (watch) {
     var forked
