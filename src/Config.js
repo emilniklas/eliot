@@ -71,7 +71,7 @@ Config.prototype._json = function () {
 Config.prototype._babel = function () {
   return {
     test: /\.js$/,
-    exclude: /(node_modules|bower_components)/,
+    exclude: /(node_modules(?![\/\\]eliot)|bower_components)/,
     loader: 'babel',
     query: {
       presets: this._babelPresets(),
