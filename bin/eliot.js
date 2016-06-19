@@ -72,7 +72,7 @@ program.parse(process.argv)
           entry: file
         })[0]
       })
-    var executable = program.using || 'node'
+    var executable = program.using || process.execPath
     return test(targets, executable, !!program.watch, !!program.verbose)
   }
 

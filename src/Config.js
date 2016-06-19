@@ -212,7 +212,7 @@ Config.prototype._externals = function () {
           return ['.bin'].indexOf(x) === -1
         })
         .forEach(function (mod) {
-          externals[mod] = 'commonjs ' + mod
+          externals[mod] = 'commonjs ' + path.resolve(process.cwd(), 'node_modules', mod)
         })
       return externals
   }

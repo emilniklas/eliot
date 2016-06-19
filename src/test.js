@@ -8,10 +8,9 @@ var path = require('path')
 
 function spawnProcess (executable, args, onClose) {
   executable = path.resolve(process.cwd(), 'node_modules', '.bin', executable)
-  var runner = spawn(executable, args)
-
-  runner.stderr.on('data', function (data) { process.stderr.write(data) })
-  runner.stdout.on('data', function (data) { process.stdout.write(data) })
+  var runner = spawn(executable, args, {
+    stdio: 'inherit'
+  })
   runner.on('close', onClose)
 }
 
@@ -20,8 +19,10 @@ module.exports = function (targets, executable, watch, verbose) {
     target.output = tempfile('.js')
     target.target = Config.Target.NODE6
     target.development = true
-    target.library = false
-    return [target.output, new Config(target).build(), target]
+    var conf = new Config(target).build()
+    delete conf.output.library
+    delete conf.output.libraryTarget
+    return [target.output, conf, target]
   })
   var configTargets = configs.map(function (kv) { return kv[1] })
   var configTargetFiles = configs.map(function (kv) { return kv[0] })
@@ -38,12 +39,7 @@ module.exports = function (targets, executable, watch, verbose) {
         return
       }
       report(target, stats, true)
-      spawnProcess(executable, configTargetFiles, function (code) {
-        console.log('DONE')
-        if (code !== 0) {
-          console.log(chalk.red('Exited with code ' + code))
-        }
-      })
+      spawnProcess(executable, configTargetFiles, function () {})
     })
   } else {
     compiler.run(function (err) {
