@@ -9,7 +9,7 @@ function Config (config) {
   this._entry = config.entry
   this._library = config.library
   this._output = path.resolve(config.output)
-  this._package = require(path.resolve(process.cwd, 'package.json'))
+  this._package = require(path.resolve(process.cwd(), 'package.json'))
   this._package.name = this._package.name || path.basename(process.cwd())
   this._jsx = config.jsx
     ? config.jsx === true ? 'react' : config.jsx
