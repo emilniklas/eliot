@@ -49,7 +49,7 @@ Config.prototype._webpackOutput = function () {
     path: path.dirname(this._output),
     filename: path.basename(this._output),
     library: this._library,
-    libraryTarget: this._libraryTarget()
+    libraryTarget: this._library ? this._libraryTarget() : void 0
   }
 }
 
@@ -220,7 +220,7 @@ Config.prototype._libraryTarget = function () {
     case Config.Target.ES3:
     case Config.Target.ES5:
     case Config.Target.ES6:
-      return void 0
+      return 'umd'
     case Config.Target.NODE6:
       return 'commonjs2'
   }
