@@ -1,3 +1,4 @@
+import 'core-js/es7'
 import 'source-map-support/register'
 import 'isomorphic-fetch/fetch-npm-node'
 
