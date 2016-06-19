@@ -2,7 +2,7 @@ import 'isomorphic-fetch/fetch-npm-node'
 
 global.__fetch = global.fetch
 
-const devMode = process.env.NODE_ENV === 'development'
+const devMode = process.env.NODE_ENV !== 'production'
 const productionMode = !devMode
 process.env.ELIOT_DEV_MODE = devMode
 process.env.ELIOT_PRODUCTION_MODE = productionMode

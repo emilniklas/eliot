@@ -1,9 +1,8 @@
 var chalk = require('chalk')
-var moment = require('moment')
 var path = require('path')
 
 module.exports = function report (config, stats, noOutput) {
-  var duration = moment.duration(stats.endTime - stats.startTime)
+  var duration = stats.endTime - stats.startTime
   var input = path.relative(process.cwd(), config.entry)
   var output = path.relative(process.cwd(), config.output)
   var annotations = []
@@ -19,7 +18,7 @@ module.exports = function report (config, stats, noOutput) {
     annotations.push(chalk.yellow('@'))
   }
   console.log(
-    chalk.green(duration.milliseconds() + 'ms'),
+    chalk.green(duration + 'ms'),
     chalk.gray('[') +
     annotations.join(chalk.gray(', ')) +
     chalk.gray(']'),
