@@ -52,8 +52,19 @@ Config.prototype._webpackOutput = function () {
     filename: path.basename(this._output),
     pathinfo: this._devMode,
     library: this._library,
-    libraryTarget: 'commonjs2',
+    libraryTarget: this._libraryTarget(),
     umdNamedDefine: true
+  }
+}
+
+Config.prototype._libraryTarget = function () {
+  switch (this._target) {
+    case Config.Target.NODE6:
+      return 'commonjs2'
+    case Config.Target.ES6:
+    case Config.Target.ES5:
+    case Config.Target.ES3:
+      return 'var'
   }
 }
 
