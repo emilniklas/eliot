@@ -5,9 +5,6 @@
   "bin": {
     "eliot": "bin/eliot.js"
   },
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "devDependencies": {},
   "dependencies": {
     "babel-core": "^6.9.1",

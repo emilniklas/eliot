@@ -1,3 +1,3 @@
-var Config = require('./src/Config')
+var Target = require('./src/Target')
 
-exports.Target = Config.Target
+exports.Target = Target.targets

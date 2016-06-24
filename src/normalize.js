@@ -1,8 +1,8 @@
-var Target = require('../config').Target
+var Target = require('./Target')
 var path = require('path')
 
 module.exports = function (configuration, overrides) {
-  var target = overrides.target || configuration.target || Target.ES3
+  var target = overrides.target || configuration.target
   var targets = configuration.targets || [{ target: target }]
   var commons = {
     jsx: overrides.jsx || configuration.jsx || false,
@@ -10,7 +10,7 @@ module.exports = function (configuration, overrides) {
     entry: overrides.entry || configuration.entry,
     development: !(overrides.production || configuration.production || !!configuration.development),
     output: overrides.output || configuration.output,
-    library: overrides.library || configuration.library || false,
+    library: overrides.library || configuration.library || false
   }
 
   return targets.reduce(function (targets, target) {
@@ -22,7 +22,7 @@ module.exports = function (configuration, overrides) {
       output: target.output || commons.output,
       development: target.development || commons.development,
       library: !library ? false : typeof library === 'string' ? library : path.basename(process.cwd()),
-      target: target.target
+      target: Target.chooseTarget(target.target)
     })
   }, [])
 }

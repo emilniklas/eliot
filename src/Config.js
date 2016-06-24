@@ -1,9 +1,9 @@
 var path = require('path')
 var webpack = require('webpack')
-var fs = require('fs')
+var Target = require('./Target')
 
 function Config (config) {
-  this._target = config.target
+  this._target = Target.chooseTarget(config.target)
   this._devMode = config.development || !!process.env.NODE_ENV === 'development'
   this._productionMode = !this._devMode
   this._entry = config.entry
@@ -17,22 +17,17 @@ function Config (config) {
   this._useDecorators = !!config.decorators
 }
 
-Config.Target = {
-  ES3: 'es3',
-  ES5: 'es5',
-  ES6: 'es6',
-  NODE6: 'node6'
-}
+Config.Target = Target.targets
 
 Config.prototype.build = function () {
   return {
     entry: this._buildEntry(),
     output: this._webpackOutput(),
     module: this._module(),
-    target: this._webpackTarget(),
+    target: this._target.webpackTarget(),
     devtool: this._devtool(),
     plugins: this._plugins(),
-    externals: this._externals()
+    externals: this._target.webpackExternals()
   }
 }
 
@@ -42,7 +37,7 @@ Config.prototype._buildEntry = function () {
     ? [path.resolve(__dirname, 'preambles', 'react.js')]
     : []
   return [
-    path.resolve(__dirname, 'preambles', this._target + '.js')
+    path.resolve(__dirname, 'preambles', this._target.name + '.js')
   ].concat(jsx).concat(main)
 }
 
@@ -52,19 +47,8 @@ Config.prototype._webpackOutput = function () {
     filename: path.basename(this._output),
     pathinfo: this._devMode,
     library: this._library,
-    libraryTarget: this._libraryTarget(),
+    libraryTarget: this._target.moduleSystem(),
     umdNamedDefine: true
-  }
-}
-
-Config.prototype._libraryTarget = function () {
-  switch (this._target) {
-    case Config.Target.NODE6:
-      return 'commonjs2'
-    case Config.Target.ES6:
-    case Config.Target.ES5:
-    case Config.Target.ES3:
-      return 'var'
   }
 }
 
@@ -92,57 +76,25 @@ Config.prototype._babel = function () {
     exclude: new RegExp(`(node_modules(?![\\/\\\\]eliot)(?![\\/\\\\]${this._package.name})|bower_components)`),
     loader: 'babel',
     query: {
-      presets: this._babelPresets(),
+      presets: this._target.babelPresets(),
       plugins: this._babelPlugins()
     }
   }
 }
 
-Config.prototype._babelPresets = function () {
-  switch (this._target) {
-    case Config.Target.NODE6:
-    case Config.Target.ES6:
-      return []
-    case Config.Target.ES5:
-    case Config.Target.ES3:
-      return ['es2015']
-  }
-}
-
 Config.prototype._babelPlugins = function () {
   var common = ['transform-runtime']
-  var asyncAwait = this._asyncAwaitPlugins()
+  var asyncAwait = this._target.asyncAwaitPlugins()
   var jsx = this._jsx ? this._babelJSX() : []
 
   if (this._useDecorators) {
     common.push('transform-decorators-legacy')
   }
 
-  switch (this._target) {
-    case Config.Target.NODE6:
-    case Config.Target.ES6:
-      return common
-        .concat(asyncAwait)
-        .concat(jsx)
-        .concat(['transform-es2015-modules-commonjs'])
-
-    case Config.Target.ES5:
-    case Config.Target.ES3:
-      return common
-        .concat(asyncAwait)
-        .concat(jsx)
-  }
-}
-
-Config.prototype._asyncAwaitPlugins = function () {
-  switch (this._target) {
-    case Config.Target.NODE6:
-    case Config.Target.ES6:
-      return ['syntax-async-functions', 'transform-async-to-generator']
-    case Config.Target.ES5:
-    case Config.Target.ES3:
-      return ['syntax-async-functions', 'transform-regenerator']
-  }
+  return common
+    .concat(asyncAwait)
+    .concat(jsx)
+    .concat(this._target.babelPlugins())
 }
 
 Config.prototype._babelJSX = function () {
@@ -157,17 +109,6 @@ Config.prototype._babelJSX = function () {
   ]
 }
 
-Config.prototype._webpackTarget = function () {
-  switch (this._target) {
-    case Config.Target.NODE6:
-      return 'node'
-    case Config.Target.ES6:
-    case Config.Target.ES5:
-    case Config.Target.ES3:
-      return 'web'
-  }
-}
-
 Config.prototype._devtool = function () {
   if (this._devMode) {
     return 'inline-source-map'
@@ -175,31 +116,14 @@ Config.prototype._devtool = function () {
 }
 
 Config.prototype._plugins = function () {
-  switch (this._target) {
-    case Config.Target.NODE6:
-      return this._optimize()
-    case Config.Target.ES3:
-    case Config.Target.ES5:
-    case Config.Target.ES6:
-      return this._optimize().concat([
-        new webpack.DefinePlugin({
-          process: {
-            env: {
-              NODE_ENV: this._devMode ? '"development"' : '"production"',
-              ELIOT_TARGET: JSON.stringify(this._target),
-              ELIOT_DEV_MODE: this._devMode ? 'true' : 'false',
-              ELIOT_PRODUCTION_MODE: this._productionMode ? 'true' : 'false',
-              ELIOT_SERVER: 'false',
-              ELIOT_BROWSER: 'true'
-            }
-          }
-        })
-      ])
-  }
+  return this._optimize().concat(this._target.webpackPlugins({
+    devMode: this._devMode,
+    productionMode: this._productionMode
+  }))
 }
 
 Config.prototype._optimize = function () {
-  if (this._devMode) { return [] }
+  if (this._devMode || !this._target.optimize(this._productionMode)) { return [] }
 
   return [
     new webpack.optimize.DedupePlugin(),
@@ -210,33 +134,6 @@ Config.prototype._optimize = function () {
       }
     })
   ]
-}
-
-Config.prototype._externals = function () {
-  switch (this._target) {
-    case Config.Target.ES3:
-    case Config.Target.ES5:
-    case Config.Target.ES6:
-      return void 0
-    case Config.Target.NODE6:
-      var externals = {}
-      var deps
-      try {
-        deps = fs.readdirSync(path.resolve(process.cwd(), 'node_modules'))
-      } catch (e) {
-        deps = fs.readdirSync(path.resolve(process.cwd(), '..'))
-      }
-      deps
-        .filter(function (x) {
-          return ['.bin'].indexOf(x) === -1
-        })
-        .forEach(function (mod) {
-          externals[mod] = 'commonjs ' + path
-            .resolve(process.cwd(), 'node_modules', mod)
-            .replace(/node_modules.*node_modules/, 'node_modules')
-        })
-      return externals
-  }
 }
 
 module.exports = Config
