@@ -58,7 +58,7 @@ in the root of our project. We can also create the file somewhere else and point
 
 The options specified in the config file is used if not overridden by flags passed in to the CLI.
 
-```
+```javascript
 export default {
   target: 'node6'
 }
@@ -69,7 +69,7 @@ and have it default to using Node 6 as its target.
 
 Instead of using magic strings we can import the Target object from the `eliot` package.
 
-```
+```javascript
 import { Target } from 'eliot/config'
 
 export default {
@@ -79,7 +79,7 @@ export default {
 
 We can add JSX and decorators support very easily:
 
-```
+```javascript
 export default {
   target: Target.ES5,
   decorators: true,
@@ -90,7 +90,7 @@ export default {
 Finally, we can configure our inputs and outputs. We can do that in multiple ways. If you have a
 single target and a single input file, you can simply do this:
 
-```
+```javascript
 export default {
   target: Target.ES5,
   entry: 'entry.js',
@@ -102,7 +102,7 @@ Then run `eliot build` and we're golden.
 
 However, we might want to compile the same entry point to multiple targets:
 
-```
+```javascript
 export default {
   targets: [
     { target: Target.ES5, output: 'dist/browser.js' },
@@ -114,7 +114,7 @@ export default {
 
 Or, we might just have multiple entry points:
 
-```
+```javascript
 export default {
   targets: [
     { target: Target.ES5, entry: 'browser.js', output: 'dist/browser.js' },
@@ -126,7 +126,7 @@ export default {
 In this case, since we don't have any common options for the targets, we can just
 export an array directly:
 
-```
+```javascript
 export default [
   {
     target: Target.ES5,
@@ -143,7 +143,7 @@ export default [
 
 Each target can have its own options, or they can share options:
 
-```
+```javascript
 export default {
   targets: [
     { target: Target.ES5, entry: 'browser.js', output: 'dist/browser.js' },
@@ -152,3 +152,8 @@ export default {
   jsx: true
 }
 ```
+
+## A word on opinion
+This package was made as a fun project for myself. I wanted to have to reinvent the wheel every
+time I started a new project. Because of this I haven't made it as extensible as I could have.
+If you think something is missing, feel free to file an issue.
