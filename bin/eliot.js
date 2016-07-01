@@ -28,11 +28,11 @@ program
   .option('-w, --watch', 'Watch the entry points and compile automatically')
   .option('-v, --verbose', 'Enable more detailed logging for debugging')
 
-program.on('--help', function () {
+program.on('--help', function () {
   console.log('  Commands:')
   console.log('')
   console.log('    eliot build --entry [file] --output [file] [options]')
-  console.log('    eliot test --using [executable] [options]')
+  console.log('    eliot test --using [executable] [options] [glob]')
   console.log('')
 })
 
@@ -65,15 +65,20 @@ program.parse(process.argv)
   var targets = normalize(configuration, options)
 
   if (args[0] === 'test') {
-    var targets = glob(path.resolve(process.cwd(), 'test', '**', '*.js'))
+    var pattern = args[1] || path.resolve(process.cwd(), 'test', '**', '*[tT]est.js')
+    var testTargets = glob(pattern)
       .map(function (file) {
-        return normalize(configuration, {
+        return normalize({
           target: Target.NODE6,
           entry: file
-        })[0]
+        }, configuration)[0]
       })
+    if (testTargets.length === 0) {
+      console.log('No tests to run')
+      return process.exit(0)
+    }
     var executable = program.using || process.execPath
-    return test(targets, executable, !!program.watch, !!program.verbose)
+    return test(testTargets, executable, !!program.watch, !!program.verbose)
   }
 
   if (args.length === 0 && targets.length === 1 && !targets[0].entry) {
