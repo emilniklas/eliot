@@ -4,7 +4,7 @@
   "description": "Next generation JavaScript, simplified.",
   "main": "index.js",
   "bin": {
-    "eliot": "eliot.js"
+    "eliot": "bin/eliot.js"
   },
   "dependencies": {
     "babel-core": "^6.9.1",
