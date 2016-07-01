@@ -3,7 +3,6 @@ var webpack = require('webpack')
 var tempfile = require('tempfile')
 var spawn = require('child_process').spawn
 var report = require('./report')
-var chalk = require('chalk')
 var path = require('path')
 
 function spawnProcess (executable, args, onClose) {
@@ -39,7 +38,7 @@ module.exports = function (targets, executable, watch, verbose) {
         return
       }
       report(target, stats, true)
-      spawnProcess(executable, configTargetFiles, function () {})
+      spawnProcess(executable, [output], function () {})
     })
   } else {
     compiler.run(function (err) {
