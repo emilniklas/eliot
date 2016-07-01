@@ -1,6 +1,6 @@
 {
   "name": "eliot",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "Next generation JavaScript, simplified.",
   "main": "index.js",
   "bin": {
