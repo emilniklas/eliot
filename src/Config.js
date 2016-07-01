@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var Target = require('./Target')
+var fs = require('fs')
 
 function Config (config) {
   this._target = Target.chooseTarget(config.target)
@@ -27,7 +28,8 @@ Config.prototype.build = function () {
     target: this._target.webpackTarget(),
     devtool: this._devtool(),
     plugins: this._plugins(),
-    externals: this._target.webpackExternals()
+    externals: this._target.webpackExternals(),
+    resolve: this._resolve()
   }
 }
 
@@ -134,6 +136,22 @@ Config.prototype._optimize = function () {
       }
     })
   ]
+}
+
+Config.prototype._resolve = function () {
+  var packageFile = path.resolve(process.cwd(), 'package.json')
+  if (!fs.existsSync(packageFile)) {
+    return void 0
+  }
+
+  var pack = require(packageFile)
+  if (!pack.name) {
+    return void 0
+  }
+
+  var resolve = { alias: {} }
+  resolve.alias[pack.name] = process.cwd()
+  return resolve
 }
 
 module.exports = Config
