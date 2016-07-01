@@ -47,7 +47,7 @@ Config.prototype._webpackOutput = function () {
     filename: path.basename(this._output),
     pathinfo: this._devMode,
     library: this._library,
-    libraryTarget: this._target.moduleSystem(),
+    libraryTarget: this._target.moduleSystem(!!this._library),
     umdNamedDefine: true
   }
 }

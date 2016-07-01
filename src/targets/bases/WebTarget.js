@@ -4,8 +4,8 @@ var DefinePlugin = require('webpack').DefinePlugin
 
 function WebTarget () {}
 
-WebTarget.prototype.moduleSystem = function () {
-  return 'var'
+WebTarget.prototype.moduleSystem = function (isLibrary) {
+  return isLibrary ? 'commonjs2' : 'var'
 }
 
 WebTarget.prototype.babelPresets = function () {
