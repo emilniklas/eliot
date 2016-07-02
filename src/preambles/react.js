@@ -1,4 +1,4 @@
-import React from 'react'
+const React = require('react')
 
 if (process.env.ELIOT_TARGET === 'browser') {
   window.__react = React.createElement

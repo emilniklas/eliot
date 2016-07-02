@@ -1,7 +1,6 @@
 'use strict'
 
-var readdirSync = require('fs').readdirSync
-var resolve = require('path').resolve
+var nodeExternals = require('webpack-node-externals')
 
 function NodeTarget () {}
 
@@ -30,21 +29,7 @@ NodeTarget.prototype.asyncAwaitPlugins = function () {
 }
 
 NodeTarget.prototype.webpackExternals = function () {
-  var externals = {}
-  var deps
-  try {
-    deps = readdirSync(resolve(process.cwd(), 'node_modules'))
-  } catch (e) {
-    deps = readdirSync(resolve(process.cwd(), '..'))
-  }
-  deps
-    .filter(function (x) {
-      return ['.bin'].indexOf(x) === -1
-    })
-    .forEach(function (mod) {
-      externals[mod] = 'commonjs ' + mod
-    })
-  return externals
+  return [nodeExternals()]
 }
 
 NodeTarget.prototype.node = function () {

@@ -1,6 +1,6 @@
 {
   "name": "eliot",
-  "version": "0.1.28",
+  "version": "0.1.29",
   "description": "Next generation JavaScript, simplified.",
   "main": "index.js",
   "bin": {
@@ -29,7 +29,8 @@
     "source-map-support": "^0.4.0",
     "tempfile": "^1.1.1",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.1",
+    "webpack-node-externals": "^1.2.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -39,7 +40,11 @@
     "type": "git",
     "url": "git+https://github.com/emilniklas/eliot.git"
   },
-  "keywords": ["build", "nextgen", "opinionated"],
+  "keywords": [
+    "build",
+    "nextgen",
+    "opinionated"
+  ],
   "author": "Emil Persson <emil.n.persson@gmail.com>",
   "license": "WTFPL",
   "bugs": {

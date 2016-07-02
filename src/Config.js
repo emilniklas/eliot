@@ -35,12 +35,12 @@ Config.prototype.build = function () {
 }
 
 Config.prototype._buildEntry = function () {
-  var main = path.resolve(process.cwd(), this._entry)
+  var main = './' + this._entry
   var jsx = this._jsx === 'react'
-    ? [path.resolve(__dirname, 'preambles', 'react.js')]
+    ? [path.join('eliot', 'src', 'preambles', 'react.js')]
     : []
   return [
-    path.resolve(__dirname, 'preambles', this._target.name + '.js')
+    path.join('eliot', 'src', 'preambles', this._target.name + '.js')
   ].concat(jsx).concat(main)
 }
 
