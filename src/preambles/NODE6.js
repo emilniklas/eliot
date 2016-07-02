@@ -1,6 +1,6 @@
-import 'core-js/es7'
-import 'source-map-support/register'
-import 'isomorphic-fetch/fetch-npm-node'
+require('core-js/es7')
+require('source-map-support/register')
+require('isomorphic-fetch/fetch-npm-node')
 
 global.__fetch = global.fetch
 
