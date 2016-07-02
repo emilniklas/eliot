@@ -42,9 +42,7 @@ NodeTarget.prototype.webpackExternals = function () {
       return ['.bin'].indexOf(x) === -1
     })
     .forEach(function (mod) {
-      externals[mod] = 'commonjs ' +
-        resolve(process.cwd(), 'node_modules', mod)
-        .replace(/node_modules.*node_modules/, 'node_modules')
+      externals[mod] = 'commonjs ' + mod
     })
   return externals
 }
