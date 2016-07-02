@@ -11,7 +11,8 @@ process.env.NODE_PATH = process.env.NODE_PATH
 process.env.NODE_PATH += path.resolve(process.cwd(), 'node_modules')
 
 var forkOptions = {
-  env: process.env
+  env: process.env,
+  cwd: process.cwd()
 }
 
 module.exports = function (target, argv, watch, verbose) {

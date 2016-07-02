@@ -70,7 +70,7 @@ program.parse(process.argv)
       .map(function (file) {
         return normalize({
           target: Target.NODE6,
-          entry: file
+          entry: path.relative(process.cwd(), file)
         }, configuration)[0]
       })
     if (testTargets.length === 0) {

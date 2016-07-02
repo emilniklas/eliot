@@ -5,11 +5,21 @@ var spawn = require('child_process').spawn
 var report = require('./report')
 var path = require('path')
 
+process.env.NODE_PATH = process.env.NODE_PATH
+  ? process.env.NODE_PATH + ':'
+  : ''
+process.env.NODE_PATH += path.resolve(process.cwd(), 'node_modules')
+
+var forkOptions = {
+  env: process.env,
+  cwd: process.cwd()
+}
+
 function spawnProcess (executable, args, onClose) {
   executable = path.resolve(process.cwd(), 'node_modules', '.bin', executable)
   var runner = spawn(executable, args, {
     stdio: 'inherit'
-  })
+  }, forkOptions)
   runner.on('close', onClose)
 }
 
