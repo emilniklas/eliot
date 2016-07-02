@@ -3,6 +3,16 @@ var webpack = require('webpack')
 var tempfile = require('tempfile')
 var fork = require('child_process').fork
 var report = require('./report')
+var path = require('path')
+
+process.env.NODE_PATH = process.env.NODE_PATH
+  ? process.env.NODE_PATH + ':'
+  : ''
+process.env.NODE_PATH += path.resolve(process.cwd(), 'node_modules')
+
+var forkOptions = {
+  env: process.env
+}
 
 module.exports = function (target, argv, watch, verbose) {
   target.output = tempfile('.js')
@@ -21,11 +31,11 @@ module.exports = function (target, argv, watch, verbose) {
       report(target, stats, true)
       if (forked) {
         forked.on('exit', function () {
-          forked = fork(target.output, argv)
+          forked = fork(target.output, argv, forkOptions)
         })
         return forked.kill()
       }
-      forked = fork(target.output, argv)
+      forked = fork(target.output, argv, forkOptions)
     })
   } else {
     compiler.run(function (err) {
@@ -33,7 +43,7 @@ module.exports = function (target, argv, watch, verbose) {
         console.error(err)
         process.exit(1)
       }
-      return fork(target.output, argv)
+      return fork(target.output, argv, forkOptions)
     })
   }
 }
