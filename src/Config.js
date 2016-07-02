@@ -29,7 +29,8 @@ Config.prototype.build = function () {
     devtool: this._devtool(),
     plugins: this._plugins(),
     externals: this._target.webpackExternals(),
-    resolve: this._resolve()
+    resolve: this._resolve(),
+    node: this._target.node()
   }
 }
 

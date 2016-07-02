@@ -38,6 +38,7 @@ WebTarget.prototype.webpackPlugins = function (env) {
 }
 
 WebTarget.prototype.webpackExternals = function () {}
+WebTarget.prototype.node = function () {}
 
 WebTarget.prototype.optimize = function (inProduction) {
   return inProduction
