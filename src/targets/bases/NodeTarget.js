@@ -49,6 +49,13 @@ NodeTarget.prototype.webpackExternals = function () {
   return externals
 }
 
+NodeTarget.prototype.node = function () {
+  return {
+    __dirname: true,
+    __filename: true
+  }
+}
+
 NodeTarget.prototype.optimize = function (inProduction) {
   return false
 }
