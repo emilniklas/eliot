@@ -35,7 +35,7 @@ Config.prototype.build = function () {
 }
 
 Config.prototype._buildEntry = function () {
-  var main = path.join('.', this._entry)
+  var main = './' + this._entry
   var jsx = this._jsx === 'react'
     ? [path.join('eliot', 'src', 'preambles', 'react.js')]
     : []
