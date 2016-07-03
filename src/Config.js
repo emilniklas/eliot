@@ -10,7 +10,8 @@ function Config (config) {
   this._entry = config.entry
   this._library = config.library
   this._output = path.resolve(config.output)
-  this._package = require(path.resolve(process.cwd(), 'package.json'))
+  var packageFile = path.resolve(process.cwd(), 'package.json')
+  this._package = fs.existsSync(packageFile) ? require(packageFile) : {}
   this._package.name = this._package.name || path.basename(process.cwd())
   this._jsx = config.jsx
     ? config.jsx === true ? 'react' : config.jsx
@@ -30,7 +31,8 @@ Config.prototype.build = function () {
     plugins: this._plugins(),
     externals: this._target.webpackExternals(),
     resolve: this._resolve(),
-    node: this._target.node()
+    node: this._target.node(),
+    bail: true
   }
 }
 
