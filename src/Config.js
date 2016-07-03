@@ -5,7 +5,7 @@ var fs = require('fs')
 
 function Config (config) {
   this._target = Target.chooseTarget(config.target)
-  this._devMode = config.development || !!process.env.NODE_ENV === 'development'
+  this._devMode = config.development || process.env.NODE_ENV !== 'production'
   this._productionMode = !this._devMode
   this._entry = config.entry
   this._library = config.library
