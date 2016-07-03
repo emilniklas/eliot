@@ -13,9 +13,9 @@ module.exports = function (configuration, overrides) {
     library: overrides.library || configuration.library || false
   }
 
-  return targets.reduce(function (targets, target) {
+  return targets.map(function (target) {
     const library = target.library || commons.library
-    return targets.concat({
+    return {
       jsx: target.jsx || commons.jsx,
       decorators: target.decorators || commons.decorators,
       entry: target.entry || commons.entry,
@@ -23,6 +23,6 @@ module.exports = function (configuration, overrides) {
       production: target.production || commons.production,
       library: !library ? false : typeof library === 'string' ? library : path.basename(process.cwd()),
       target: Target.chooseTarget(target.target)
-    })
-  }, [])
+    }
+  })
 }

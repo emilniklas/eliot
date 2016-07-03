@@ -2,6 +2,7 @@ var Config = require('./Config')
 var webpack = require('webpack')
 var path = require('path')
 var report = require('./report')
+var inspect = require('util').inspect
 
 function reportMulti (config, err, stats) {
   if (err) {
@@ -29,7 +30,7 @@ module.exports = function (targets, watch, verbose) {
   var webpackConfigs = Object.keys(allConfig).map(function (k) {
     return allConfig[k][1]
   })
-  verbose && console.log(webpackConfigs)
+  verbose && console.log(inspect(webpackConfigs, null, 1000))
   var compiler = webpack(webpackConfigs)
   function report (err, stats) {
     if (stats.stats) {
