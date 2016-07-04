@@ -5,12 +5,13 @@ var fs = require('fs')
 
 function Config (config) {
   this._target = Target.chooseTarget(config.target)
-  this._devMode = config.development || !!process.env.NODE_ENV === 'development'
-  this._productionMode = !this._devMode
+  this._productionMode = config.production || process.env.NODE_ENV === 'production'
+  this._devMode = !this._productionMode
   this._entry = config.entry
   this._library = config.library
   this._output = path.resolve(config.output)
-  this._package = require(path.resolve(process.cwd(), 'package.json'))
+  var packageFile = path.resolve(process.cwd(), 'package.json')
+  this._package = fs.existsSync(packageFile) ? require(packageFile) : {}
   this._package.name = this._package.name || path.basename(process.cwd())
   this._jsx = config.jsx
     ? config.jsx === true ? 'react' : config.jsx
@@ -28,9 +29,10 @@ Config.prototype.build = function () {
     target: this._target.webpackTarget(),
     devtool: this._devtool(),
     plugins: this._plugins(),
-    externals: this._target.webpackExternals(),
+    externals: this._target.webpackExternals(this._library),
     resolve: this._resolve(),
-    node: this._target.node()
+    node: this._target.node(),
+    bail: true
   }
 }
 
@@ -122,7 +124,7 @@ Config.prototype._plugins = function () {
   return this._optimize().concat(this._target.webpackPlugins({
     devMode: this._devMode,
     productionMode: this._productionMode
-  }))
+  }, this._library))
 }
 
 Config.prototype._optimize = function () {
