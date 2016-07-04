@@ -1,5 +1,6 @@
 'use strict'
 
+var nodeExternals = require('webpack-node-externals')
 var DefinePlugin = require('webpack').DefinePlugin
 
 function WebTarget () {}
@@ -20,7 +21,10 @@ WebTarget.prototype.webpackTarget = function () {
   return 'web'
 }
 
-WebTarget.prototype.webpackPlugins = function (env) {
+WebTarget.prototype.webpackPlugins = function (env, isLibrary) {
+  if (isLibrary) {
+    return []
+  }
   return [
     new DefinePlugin({
       process: {
@@ -37,7 +41,11 @@ WebTarget.prototype.webpackPlugins = function (env) {
   ]
 }
 
-WebTarget.prototype.webpackExternals = function () {}
+WebTarget.prototype.webpackExternals = function (isLibrary) {
+  if (isLibrary) {
+    return [nodeExternals()]
+  }
+}
 WebTarget.prototype.node = function () {}
 
 WebTarget.prototype.optimize = function (inProduction) {

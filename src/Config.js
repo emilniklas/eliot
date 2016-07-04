@@ -29,7 +29,7 @@ Config.prototype.build = function () {
     target: this._target.webpackTarget(),
     devtool: this._devtool(),
     plugins: this._plugins(),
-    externals: this._target.webpackExternals(),
+    externals: this._target.webpackExternals(this._library),
     resolve: this._resolve(),
     node: this._target.node(),
     bail: true
@@ -124,7 +124,7 @@ Config.prototype._plugins = function () {
   return this._optimize().concat(this._target.webpackPlugins({
     devMode: this._devMode,
     productionMode: this._productionMode
-  }))
+  }, this._library))
 }
 
 Config.prototype._optimize = function () {
