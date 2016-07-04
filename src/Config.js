@@ -136,7 +136,8 @@ Config.prototype._optimize = function () {
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
-      }
+      },
+      comments: false
     })
   ]
 }

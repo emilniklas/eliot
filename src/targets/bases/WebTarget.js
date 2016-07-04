@@ -22,22 +22,36 @@ WebTarget.prototype.webpackTarget = function () {
 }
 
 WebTarget.prototype.webpackPlugins = function (env, isLibrary) {
-  if (isLibrary) {
-    return []
-  }
+  const defines = {}
+  defines.process = {}
+  defines.process.env = {}
+
+  defines.process.env.ELIOT_TARGET = isLibrary
+    ? 'process.env.ELIOT_TARGET'
+    : JSON.stringify(this.name)
+
+  defines.process.env.NODE_ENV = isLibrary
+    ? 'process.env.NODE_ENV'
+    : env.devMode ? '"development"' : '"production"'
+
+  defines.process.env.ELIOT_DEV_MODE = isLibrary
+    ? 'process.env.ELIOT_DEV_MODE'
+    : env.devMode ? 'true' : 'false'
+
+  defines.process.env.ELIOT_PRODUCTION_MODE = isLibrary
+    ? 'process.env.ELIOT_PRODUCTION_MODE'
+    : env.productionMode ? 'true' : 'false'
+
+  defines.process.env.ELIOT_SERVER = isLibrary
+    ? 'process.env.ELIOT_SERVER'
+    : 'false'
+
+  defines.process.env.ELIOT_BROWSER = isLibrary
+    ? 'process.env.ELIOT_BROWSER'
+    : 'true'
+
   return [
-    new DefinePlugin({
-      process: {
-        env: {
-          NODE_ENV: env.devMode ? '"development"' : '"production"',
-          ELIOT_TARGET: JSON.stringify(this.name),
-          ELIOT_DEV_MODE: env.devMode ? 'true' : 'false',
-          ELIOT_PRODUCTION_MODE: env.productionMode ? 'true' : 'false',
-          ELIOT_SERVER: 'false',
-          ELIOT_BROWSER: 'true'
-        }
-      }
-    })
+    new DefinePlugin(defines)
   ]
 }
 
